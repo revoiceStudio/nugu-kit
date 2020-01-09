@@ -18,7 +18,7 @@ nugu.app = (req, res) =>{
     this.audioPlayerActivity = undefined;
     this.audioToken = undefined;
     this.audioOffset = undefined;
-    if(data.context.supportedInterfaces){
+    if(Object.keys(data.context.supportedInterfaces).length !== 0){
         this.audioPlayerActivity = data.context.supportedInterfaces.AudioPlayer.playerActivity;
         this.audioToken = data.context.supportedInterfaces.AudioPlayer.token;
         this.audioOffset = data.context.supportedInterfaces.AudioPlayer.offsetInMilliseconds;
