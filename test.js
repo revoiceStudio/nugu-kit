@@ -1,8 +1,8 @@
-const nugu = require("nugu-kit")
+const nugu = require("./index")
 const express = require("express");
 const app = express();
 app.use(express.json());
-const port = {{port}}
+const port = /* port */
 
 app.post('/answer.food',(req,res)=>{
     nugu.app(req,res); // 초기화
