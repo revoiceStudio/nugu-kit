@@ -52,6 +52,7 @@ app.use(express.json());
 
 app.post('/answer.food',(req,res)=>{
     nugu.app(req,res); // 초기화
+    console.log(nugu.getAuthorization()); // TEST-API-KEY
     console.log(nugu.getVersion());     // 1.0 
     console.log(nugu.getActionName());  // FoodFighter
     console.log(nugu.getEvent());       // { 'token': 'finish_sound', 'type': 'AudioPlayer.PlaybackFinished','offset_in_milli_seconds': 2517 }
