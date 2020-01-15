@@ -1,6 +1,6 @@
 {
   "name": "nugu-kit",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A module to simplify creation of nugu (skt ai speaker) using Node.js",
   "main": "index.js",
   "scripts": {
