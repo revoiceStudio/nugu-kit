@@ -6,7 +6,44 @@ SK텔레콤 AI 스피커 NUGU의 play를 만드는 과정에서 직접 정의한
 npm install nugu-kit
 ```
 ## 사용 방법 예시
-### Request
+### Request sample
+```
+{
+    "version": "1.0",
+    "action": {
+        "actionName": "FoodFighter",
+        "parameters": {
+            "food": { "type": "koreans", "value": "김치" },
+            "price": { "type": "won", "value": "1000" }
+        }
+    },
+    "event": {
+        "token": "finish_sound",
+        "type": "AudioPlayer.PlaybackFinished",
+        "offset_in_milli_seconds": 2517
+    },
+    "context": {
+        "session": {
+            "accessToken": "abc123",
+            "id": "def456",
+            "isNew": "true",
+            "isPlayBuilderRequest": "false"
+        },
+        "device": {
+            "type": "speaker.nugu.nu200",
+            "state": null
+        },
+        "supportedInterfaces": {
+            "AudioPlayer": {
+                "playerActivity": "PLAYING",
+                "token": "korean_token",
+                "offsetInMilliseconds": 100000
+            }
+        }
+    }
+}
+```
+### Request 파싱
 ```javascript
 const nugu = require('nugu-kit');
 const express = require('express');
@@ -15,18 +52,20 @@ app.use(express.json());
 
 app.post('/answer.food',(req,res)=>{
     nugu.app(req,res); // 초기화
-    console.log(nugu.getVersion());     //1.0 
-    console.log(nugu.getActionName());  //FoodFighter 
-    console.log(nugu.getAccessToken()); //abc123
-    console.log(nugu.getSessionId());   //def456
-    console.log(nugu.getIsNew());       //true
-    console.log(nugu.getIsPlayBuilderRequest()); //false
-    console.log(nugu.getDeviceType());  //speaker.nugu.nu200
-    console.log(nugu.getDeviceState()); //null
-    console.log(nugu.getAudioPlayerActivity()); //PLAYING
-    console.log(nugu.getAudioToken());  //korean_token
-    console.log(nugu.getAudioOffset()); //100000
-    console.log(nugu.getDirectives());  //  { type: 'AudioPlayer.Play', audioItem: { stream: [Object], metadata: {} } }
+    console.log(nugu.getVersion());     // 1.0 
+    console.log(nugu.getActionName());  // FoodFighter
+    console.log(nugu.getEvent());       // { 'token': 'finish_sound', 'type': 'AudioPlayer.PlaybackFinished','offset_in_milli_seconds': 2517 }
+    console.log(nugu.getContext());     // { 'session': {...}, 'device': {...}, 'supportedInterfaces': {...}  }
+    console.log(nugu.getAccessToken()); // abc123
+    console.log(nugu.getSessionId());   // def456
+    console.log(nugu.getIsNew());       // true
+    console.log(nugu.getIsPlayBuilderRequest()); // false
+    console.log(nugu.getDeviceType());  // speaker.nugu.nu200
+    console.log(nugu.getDeviceState()); // null
+    console.log(nugu.getAudioPlayer()); // { "playerActivity": "PLAYING", "token": "korean_token", "offsetInMilliseconds": 100000 }
+    console.log(nugu.getAudioPlayerActivity()); // PLAYING
+    console.log(nugu.getAudioToken());  // korean_token
+    console.log(nugu.getAudioOffset()); // 100000
 })
 ```
 
@@ -34,12 +73,13 @@ app.post('/answer.food',(req,res)=>{
 ```javascript
 app.post('/answer.food',(req,res)=>{
     nugu.app(req,res);
-    const value1 = nugu.getValue("food");         // 김치
-    const value1Type = nugu.getValueType("food"); // korean
-    const values = nugu.getValues();                // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
+    const value1 = nugu.getValue("food");          // 김치
+    const value2 = nugu.getValue("price");         // 1000
+    const value1Type = nugu.getValueType("food");  // korean
+    const value2Type = nugu.getValueType("price"); // won
+    const values = nugu.getValues();               // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
 })
 ```
-
 ### Response
 #### 기본 응답 
 ```javascript
@@ -54,6 +94,17 @@ app.post('/answer.food',(req,res)=>{
     nugu.response();
 })
 ```
+#### 기본 응답 output
+```
+{
+    "version": "1.0",
+    "resultCode": "OK",
+    "output": {
+      "ment": "김치의 가격은 1000원 이에요."
+    }
+}
+```
+
 #### 예외 상황 응답
 ```javascript
 app.post('/answer.food',(req,res)=>{
@@ -64,7 +115,7 @@ app.post('/answer.food',(req,res)=>{
     
     if(foodType == "korean"){
         const prompt = food+"의 가격은 "+price+"원 이에요.";
-        const output = {"food_ment":prompt};
+        const output = {"ment":prompt};
         nugu.setOutput(output)
         nugu.response();
     }else{
@@ -72,6 +123,13 @@ app.post('/answer.food',(req,res)=>{
         nugu.responseException();
     }
 })
+```
+#### 예외 상황 응답 output
+```
+{
+    "version": "1.0",
+    "resultCode": "notKorean"
+}
 ```
 
 #### AudioPlayer Interface를 사용하는 경우 응답
@@ -83,14 +141,56 @@ app.post('/answer.food',(req,res)=>{
     const prompt = food+"의 가격은 "+price+"원 이에요.";
     const output = {"ment":prompt};
 
-    nugu.setDirectiveType("AudioPlayer.Stop")
-    nugu.setDirectiveUrl("https://www.food.kr")
-    nugu.setDirectiveToken("search_token")
-    nugu.setDirectivePreviousToken("select_token")
-    nugu.setDirectiveOffset(10000)
+    nugu.setDirectiveType("AudioPlayer.Stop");
+    nugu.setDirectiveUrl("https://www.food.kr/stop.mp3");
+    nugu.setDirectiveToken("search_token");
+    nugu.setDirectivePreviousToken("select_token");
+    nugu.setDirectiveOffset(10000);
+    nugu.setDirectiveDelay(20000);
+    nugu.setDirectiveInterval(30000);
 
-    nugu.setOutput(output)
-    nugu.responseAudioPlayer()
+    nugu.setOutput(output);
+    nugu.responseAudioPlayer();
+})
+```
+#### AudioPlayer Interface를 사용하는 경우 응답 output
+```
+{
+    "version": "1.0",
+    "resultCode": "OK",
+    "output": {
+      "ment": "김치의 가격은 1000원 이에요."
+    },
+    "directives": [
+      {
+        "type": "AudioPlayer.Stop",
+        "audioItem": {     
+            "stream": {
+                "url": "https://www.food.kr/stop.mp3",
+                "offsetInMilliseconds": 10000,
+                "progressReport": {
+                    "progressReportDelayInMilliseconds": 20000,
+                    "progressReportIntervalInMilliseconds": 30000
+                },
+                "token": "search_token",
+                "expectedPreviousToken": "select_token"
+            }
+        }
+      }
+    ]
+}
+```
+
+#### Default directives
+```javascript
+const nugu = require('nugu-kit');
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.post('/answer.food',(req,res)=>{
+    nugu.app(req,res); // 초기화
+    console.log(nugu.getDirectives());
     /*** Default directive ***/
     /*   
         {
@@ -110,9 +210,9 @@ app.post('/answer.food',(req,res)=>{
             }
         }
     */
-})
-```
+}
 
+```
 ## 참고 
 [play builder document](https://developers-doc.nugu.co.kr/)
 
