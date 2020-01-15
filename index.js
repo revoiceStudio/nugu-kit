@@ -6,6 +6,8 @@ nugu.app = (req, res) =>{
     this.version = data.version;
     this.actionName = data.action.actionName;
     this.parameters = data.action.parameters;
+    this.event = data.event;
+    this.context = data.context;
     this.accessToken = undefined;
     if(data.context.session.accessToken !== undefined){
         this.accessToken = data.context.session.accessToken;
@@ -15,10 +17,12 @@ nugu.app = (req, res) =>{
     this.isPlayBuilderRequest = data.context.session.isPlayBuilderRequest;
     this.deviceType = data.context.device.type;
     this.deviceState = data.context.device.state;
+    this.audioPlayer = undefined;
     this.audioPlayerActivity = undefined;
     this.audioToken = undefined;
     this.audioOffset = undefined;
     if(Object.keys(data.context.supportedInterfaces).length !== 0){
+        this.audioPlayer = data.context.supportedInterfaces.AudioPlayer;
         this.audioPlayerActivity = data.context.supportedInterfaces.AudioPlayer.playerActivity;
         this.audioToken = data.context.supportedInterfaces.AudioPlayer.token;
         this.audioOffset = data.context.supportedInterfaces.AudioPlayer.offsetInMilliseconds;
@@ -39,7 +43,6 @@ nugu.app = (req, res) =>{
             }
         }
     }
-    return this;
 };
 nugu.response = ()=>{
     let result = {};
@@ -107,15 +110,30 @@ nugu.getVersion = ()=>{
 nugu.getActionName = ()=>{
     return this.actionName;
 };
+nugu.getEvent = ()=>{
+    return this.event;
+}
+nugu.getContext = ()=>{
+    return this.context;
+}
 nugu.getValue = (value)=>{
+    if(this.parameters[value] === undefined){
+        return undefined
+    }
     return this.parameters[value].value;
 };
 nugu.getValueType = (value)=>{
+    if(this.parameters[value] === undefined){
+        return undefined
+    }
     return this.parameters[value].type;
 };
 nugu.getValues = ()=>{
     return this.parameters;
 };
+nugu.getAudioPlayer = ()=>{
+    return this.audioPlayer;
+}
 nugu.getAccessToken = ()=>{
     return this.accessToken;
 };
