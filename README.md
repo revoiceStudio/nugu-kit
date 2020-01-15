@@ -18,8 +18,8 @@ npm install nugu-kit
         }
     },
     "event": {
-        "token": "finish_sound",
-        "type": "AudioPlayer.PlaybackFinished",
+        "token": "select_token",
+        "type": "AudioPlayer.PlaybackStarted",
         "offset_in_milli_seconds": 2517
     },
     "context": {
