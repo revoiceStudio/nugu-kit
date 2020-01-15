@@ -3,6 +3,7 @@ let nugu = {};
 nugu.app = (req, res) =>{
     const data = req.body;
     this.res = res;
+    this.authorization = req.headers.authorization.split(" ")[1];
     this.version = data.version;
     this.actionName = data.action.actionName;
     this.parameters = data.action.parameters;
@@ -104,6 +105,9 @@ nugu.setDirectivePreviousToken = (previousToken)=>{
 /* 
  * get request JSON
  */
+nugu.getAuthorization = ()=>{
+    return this.authorization;
+}
 nugu.getVersion = ()=>{
     return this.version;
 };
