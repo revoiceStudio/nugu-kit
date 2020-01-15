@@ -10,6 +10,11 @@ content-type: application/json
             "price": { "type": "won", "value": "1000" }
         }
     },
+    "event": {
+        "token": "finish_sound",
+        "type": "AudioPlayer.PlaybackFinished",
+        "offset_in_milli_seconds": 2517
+    },
     "context": {
         "session": {
             "accessToken": "abc123",
