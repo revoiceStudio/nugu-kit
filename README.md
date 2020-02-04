@@ -26,8 +26,8 @@ npm install nugu-kit
         "session": {
             "accessToken": "abc123",
             "id": "def456",
-            "isNew": "true",
-            "isPlayBuilderRequest": "false"
+            "isNew": true,
+            "isPlayBuilderRequest": false
         },
         "device": {
             "type": "speaker.nugu.nu200",
@@ -64,7 +64,8 @@ app.post('/answer.food',(req,res)=>{
     console.log(nugu.parameters); // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
 
     // event
-    console.log(nugu.event);
+    console.log(nugu.event); // { token: 'select_token', type: 'AudioPlayer.PlaybackStarted', offset_in_milli_seconds: 2517 }
+}
 
     // session
     console.log(nugu.accessToken); // abc123
@@ -160,7 +161,7 @@ app.post('/answer.food',(req,res)=>{
 
     // default directive 추가
     nugu.addDirective(); 
-    
+
     nugu.directiveType = 'AudioPlayer.Stop';
     nugu.directiveUrl = 'https://www.food.kr/stop.mp3';
     nugu.directiveOffset = 10000;
