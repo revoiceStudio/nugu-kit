@@ -36,7 +36,7 @@ npm install nugu-kit
         "supportedInterfaces": {
             "AudioPlayer": {
                 "playerActivity": "PLAYING",
-                "token": "korean_token",
+                "token": "select_token",
                 "offsetInMilliseconds": 100000
             }
         }
@@ -77,9 +77,9 @@ app.post('/answer.food',(req,res)=>{
     console.log(nugu.deviceState); // null
 
     // supportedInterfaces
-    console.log(nugu.audioPlayer) // { 'playerActivity': 'PLAYING', 'token': 'korean_token', 'offsetInMilliseconds': 100000 }
+    console.log(nugu.audioPlayer) // { 'playerActivity': 'PLAYING', 'token': 'select_token', 'offsetInMilliseconds': 100000 }
     console.log(nugu.audioPlayerActivity); // PLAYING
-    console.log(nugu.audioToken);  // korean_token
+    console.log(nugu.audioToken);  // select_token
     console.log(nugu.audioOffset); // 100000
 
     // response
@@ -156,7 +156,7 @@ app.post('/answer.food',(req,res)=>{
     const nugu = new Nugu(req);
     const food = nugu.getValue("food");
     const price = nugu.getValue("price");
-    const prompt = food+"의 가격은 "+price+"원 이에요.";
+    const prompt = `${food}의 가격은 ${price}원 이에요`;
 
     // default directive 추가
     nugu.addDirective(); 
