@@ -1,65 +1,86 @@
-const nugu = require("./index")
-const express = require("express");
+const Nugu = require('./index')
+const express = require('express');
 const app = express();
 app.use(express.json());
-const port = /* port */
+const port = 2022 /* port */
 
 app.post('/answer.food',(req,res)=>{
-    nugu.app(req,res); // 초기화
-    console.log(nugu.getVersion());     //1.0 
-    console.log(nugu.getActionName());  //FoodFighter 
-    console.log(nugu.getAccessToken()); //abc123
-    console.log(nugu.getSessionId());   //def456
-    console.log(nugu.getIsNew());       //true
-    console.log(nugu.getIsPlayBuilderRequest()); //false
-    console.log(nugu.getDeviceType());  //speaker.nugu.nu200
-    console.log(nugu.getDeviceState()); //null
-    console.log(nugu.getAudioPlayerActivity()); //PLAYING
-    console.log(nugu.getAudioToken());  //korean_token
-    console.log(nugu.getAudioOffset()); //100000
-    console.log(nugu.getDirectives());  //  { type: 'AudioPlayer.Play', audioItem: { stream: [Object], metadata: {} } }
-    console.log(nugu.getValue("food")); // 김치
-    console.log(nugu.getValueType("food")); // korean
-    console.log(nugu.getValues()); // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
+    const nugu = new Nugu(req);
 
-    /*** 기본 응답 ***/
-    const food = nugu.getValue("food");
-    const price = nugu.getValue("price");
-    const prompt = food+"의 가격은 "+price+"원 이에요.";
-    const output = {"ment":prompt};
+    // apikey
+    console.log(nugu.authorization) // TEST-API-KEY
 
-    nugu.setOutput(output);
-    nugu.response();
+    // version
+    console.log(nugu.version);     // 2.0 
 
-    /*** 예외 상황 응답 ***/
-    // const food = nugu.getValue("food");
-    // const foodType = nugu.getValueType("food");
-    // const price = nugu.getValue("price");
+    // action
+    console.log(nugu.actionName);  // FoodFighter 
+    console.log(nugu.parameters); // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
+    console.log(nugu.getValue('food')); // 김치
+    console.log(nugu.getValueType('food')); // korean
 
-    // if(foodType == "korean"){
-    //     const prompt = food+"의 가격은 "+price+"원 이에요.";
-    //     const output = {"food_ment":prompt};
-    //     nugu.setOutput(output)
-    //     nugu.response();
-    // }else{
-    //     nugu.setResultCode("notKorean");
-    //     nugu.responseException();
+    // event
+    console.log(nugu.event);
+
+    // session
+    console.log(nugu.accessToken); // abc123
+    console.log(nugu.sessionId);   // def456
+    console.log(nugu.isNew);       // true
+    console.log(nugu.isPlayBuilderRequest); // false
+
+    // device
+    console.log(nugu.deviceType);  // speaker.nugu.nu200
+    console.log(nugu.deviceState); // null
+
+    // supportedInterfaces
+    console.log(nugu.audioPlayer) // { 'playerActivity': 'PLAYING', 'token': 'korean_token', 'offsetInMilliseconds': 100000 }
+    console.log(nugu.audioPlayerActivity); // PLAYING
+    console.log(nugu.audioToken);  // korean_token
+    console.log(nugu.audioOffset); // 100000
+
+    // response
+    console.log(nugu.response);  //  { version: '2.0', resultCode: 'OK', output: {}, directives: [] }
+
+    
+    const food = nugu.getValue('food');
+    const price = parseInt(nugu.getValue('price'));
+    const prompt = `${food}의 가격은 ${price}원 이에요`;
+    /*
+     * 기본 응답
+     */
+
+    // nugu.output = {'ment':prompt};
+    // return res.json(nugu.response);
+
+    /*
+     * 예외 상황 응답
+     */
+
+    // if(price >700){
+    //     nugu.resultCode = 'priceExceed';
+    //     return res.json(nugu.response);
     // }
 
-    /*** AudioPlayer Interface를 사용하는 경우 응답 ***/
-    // const food = nugu.getValue("food");
-    // const price = nugu.getValue("price");
-    // const prompt = food+"의 가격은 "+price+"원 이에요.";
-    // const output = {"ment":prompt};
+    // nugu.output = {'ment':prompt};
+    // return res.json(nugu.response);
+    
 
-    // nugu.setDirectiveType("AudioPlayer.Stop")
-    // nugu.setDirectiveUrl("https://www.food.kr")
-    // nugu.setDirectiveToken("search_token")
-    // nugu.setDirectivePreviousToken("select_token")
-    // nugu.setDirectiveOffset(10000)
+    /* 
+     * AudioPlayer Interface를 사용하는 경우 응답
+     */
 
-    // nugu.setOutput(output)
-    // nugu.responseAudioPlayer()
+    nugu.addDirective();
+    console.log(nugu.response);
+    nugu.directiveType = 'AudioPlayer.Stop';
+    nugu.directiveUrl = 'https://www.food.kr/food.mp3';
+    nugu.directiveOffset = 10000;
+    nugu.directiveDelay = 20000;
+    nugu.directiveInterval = 30000;
+    nugu.directiveToken = 'search_token';
+    nugu.directivePreviousToken = 'select_token';
+    
+    nugu.output = {'ment':prompt};
+    return res.json(nugu.response);
 })
 
 app.listen(port,()=>{

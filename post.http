@@ -1,18 +1,19 @@
-POST http://{{server_url}}/answer.food HTTP/1.1
+POST http://${domain}/answer.food HTTP/1.1
 content-type: application/json
+authorization: authorization TEST-API-KEY
 
 {
-    "version": "1.0",
+    "version": "2.0",
     "action": {
         "actionName": "FoodFighter",
         "parameters": {
-            "food": { "type": "koreans", "value": "김치" },
+            "food": { "type": "korean", "value": "김치" },
             "price": { "type": "won", "value": "1000" }
         }
     },
     "event": {
-        "token": "finish_sound",
-        "type": "AudioPlayer.PlaybackFinished",
+        "token": "select_token",
+        "type": "AudioPlayer.PlaybackStarted",
         "offset_in_milli_seconds": 2517
     },
     "context": {
