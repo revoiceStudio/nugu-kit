@@ -20,8 +20,8 @@ authorization: authorization TEST-API-KEY
         "session": {
             "accessToken": "abc123",
             "id": "def456",
-            "isNew": "true",
-            "isPlayBuilderRequest": "false"
+            "isNew": true,
+            "isPlayBuilderRequest": false
         },
         "device": {
             "type": "speaker.nugu.nu200",
