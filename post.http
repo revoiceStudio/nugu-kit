@@ -1,0 +1,38 @@
+POST http://${domain}/answer.food HTTP/1.1
+content-type: application/json
+authorization: authorization TEST-API-KEY
+
+{
+    "version": "2.0",
+    "action": {
+        "actionName": "FoodFighter",
+        "parameters": {
+            "food": { "type": "korean", "value": "김치" },
+            "price": { "type": "won", "value": "1000" }
+        }
+    },
+    "event": {
+        "token": "select_token",
+        "type": "AudioPlayer.PlaybackStarted",
+        "offset_in_milli_seconds": 2517
+    },
+    "context": {
+        "session": {
+            "accessToken": "abc123",
+            "id": "def456",
+            "isNew": true,
+            "isPlayBuilderRequest": false
+        },
+        "device": {
+            "type": "speaker.nugu.nu200",
+            "state": null
+        },
+        "supportedInterfaces": {
+            "AudioPlayer": {
+                "playerActivity": "PLAYING",
+                "token": "korean_token",
+                "offsetInMilliseconds": 100000
+            }
+        }
+    }
+}
