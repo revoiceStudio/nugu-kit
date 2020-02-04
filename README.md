@@ -64,8 +64,7 @@ app.post('/answer.food',(req,res)=>{
     console.log(nugu.parameters); // { 'food': { type: 'korean', value: '김치' }, 'price':{ type: 'won', value: '1000'} }
 
     // event
-    console.log(nugu.event); // { token: 'select_token', type: 'AudioPlayer.PlaybackStarted', offset_in_milli_seconds: 2517 }
-}
+    console.log(nugu.event); // { token: 'select_token', type: 'AudioPlayer.PlaybackStarted', offset_in_milli_seconds: 2517 }}
 
     // session
     console.log(nugu.accessToken); // abc123
