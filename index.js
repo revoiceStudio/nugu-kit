@@ -20,9 +20,11 @@ module.exports = class Nugu {
 
         if (Object.keys(req.body.context.supportedInterfaces).length !== 0) {
             this.audioPlayer = req.body.context.supportedInterfaces.AudioPlayer;
-            this.audioPlayerActivity = this.audioPlayer.playerActivity;
-            this.audioToken = this.audioPlayer.token;
-            this.audioOffset = this.audioPlayer.offsetInMilliseconds;
+            if(this.audioPlayer){
+                this.audioPlayerActivity = this.audioPlayer.playerActivity;
+                this.audioToken = this.audioPlayer.token;
+                this.audioOffset = this.audioPlayer.offsetInMilliseconds;
+            }
         }
     }
 
